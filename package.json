@@ -1,0 +1,16 @@
+{
+  "name": "buffer-walker",
+  "version": "0.0.1",
+  "description": "Wrapper around Buffer object keeping track of current position during reading from or writing to it.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [],
+  "author": "Michal Molawka",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  }
+}
