@@ -6,6 +6,10 @@
   "scripts": {
     "test": "mocha"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bam-ftw/buffer-walker"
+  },
   "keywords": [],
   "author": "Michal Molawka",
   "license": "ISC",
