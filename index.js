@@ -6,7 +6,7 @@ module.exports = class BufferWalker {
 	 */
 	constructor (buffer) {
 		if (buffer instanceof Buffer !== true)
-			throw new TypeError('buffer must be an instance of Buffer object');
+			throw new TypeError('buffer must be an instance of Buffer class');
 
 		this.buffer = buffer;
 		this.currentPosition = 0;
