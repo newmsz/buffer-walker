@@ -1,4 +1,9 @@
 'use strict';
+const Int64Buffer = require('int64-buffer');
+const Int64LE = Int64Buffer.Int64LE;
+const Int64BE = Int64Buffer.Int64BE;
+const Uint64LE = Int64Buffer.Uint64LE;
+const Uint64BE = Int64Buffer.Uint64BE;
 
 module.exports = class BufferWalker {
 	/**
@@ -133,42 +138,31 @@ module.exports = class BufferWalker {
 	 * walker advances by 8.
 	 */
 	readInt64BE () {
-		const val = this.buffer.readIntBE(this.currentPosition + 2, 6);
+		const slice = this.buffer.slice(this.currentPosition, this.currentPosition + 8);
+		const i64 = new Int64BE(slice);
 		this.advance(8);
-		return val;
+		return i64.toNumber();
 	}
 
-	/**
-	 * JS does not support 64 bit integers,
-	 * only 6 (last) bytes are read,
-	 * walker advances by 8.
-	 */
 	readUInt64BE () {
-		const val = this.buffer.readUIntBE(this.currentPosition + 2, 6);
+		const slice = this.buffer.slice(this.currentPosition, this.currentPosition + 8)
+		const u64 = new UInt64BE(slice);
 		this.advance(8);
-		return val;
+		return u64.toNumber();
 	}
 
-	/**
-	 * JS does not support 64 bit integers,
-	 * only 6 (first) bytes are read,
-	 * walker advances by 8.
-	 */
 	readInt64LE () {
-		const val = this.buffer.readIntLE(this.currentPosition, 6);
+		const slice = this.buffer.slice(this.currentPosition, this.currentPosition + 8);
+		const i64 = new Int64LE(slice);
 		this.advance(8);
-		return val;
+		return i64.toNumber();
 	}
 
-	/**
-	 * JS does not support 64 bit integers,
-	 * only 6 (first) bytes are read,
-	 * walker advances by 8.
-	 */
 	readUInt64LE () {
-		const val = this.buffer.readUIntLE(this.currentPosition, 6);
+		const slice = this.buffer.slice(this.currentPosition, this.currentPosition + 8);
+		const u64 = new UInt64LE(slice);
 		this.advance(8);
-		return val;
+		return u64.toNumber();
 	}
 
 	readFloatBE () {
@@ -278,12 +272,14 @@ module.exports = class BufferWalker {
 	}
 
 	writeInt64BE (val) {
-		this.buffer.writeIntBE(val, this.currentPosition + 2, 6);
+		const buff = (new Int64BE(val)).toBuffer(true);
+		buff.copy(this.buffer, this.currentPosition);
 		this.advance(8);
 	}
 
 	writeUInt64BE (val) {
-		this.buffer.writeUIntBE(val, this.currentPosition + 2, 6);
+		const buff = (new UInt64BE(val)).toBuffer(true);
+		buff.copy(this.buffer, this.currentPosition);
 		this.advance(8);
 	}
 
@@ -319,12 +315,14 @@ module.exports = class BufferWalker {
 	}
 
 	writeInt64LE (val) {
-		this.buffer.writeIntLE(val, this.currentPosition, 6);
+		const buff = (new Int64LE(val)).toBuffer(true);
+		buff.copy(this.buffer, this.currentPosition);
 		this.advance(8);
 	}
 
 	writeUInt64LE (val) {
-		this.buffer.writeUIntLE(val, this.currentPosition, 6);
+		const buff = (new UInt64LE(val)).toBuffer(true);
+		buff.copy(this.buffer, this.currentPosition);
 		this.advance(8);
 	}
 

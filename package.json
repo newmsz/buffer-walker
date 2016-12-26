@@ -16,5 +16,8 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0"
+  },
+  "dependencies": {
+    "int64-buffer": "^0.1.9"
   }
 }
