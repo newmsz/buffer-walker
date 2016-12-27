@@ -22,6 +22,19 @@ describe('BufferWalker', function(){
 		0, 0, 0, 0, 0, 0, 0, 1, // i64
 	]);
 
+	it('should handle +/- 2^53 64 bit integer values', () =>  {
+		const buffer = Buffer.alloc(16);
+		const walker = new BufferWalker(buffer);
+
+		walker.writeInt64BE(9007199254740992);
+		walker.writeInt64LE(-9007199254740992);
+
+		walker.goToStart();
+
+		expect(walker.readInt64BE()).to.equal(9007199254740992);
+		expect(walker.readInt64LE()).to.equal(-9007199254740992);
+	});
+
 	it('should accept only instances of Buffer class', () =>  {
 		expect(() => {
 			new BufferWalker();
