@@ -50,7 +50,7 @@ module.exports = class BufferWalker {
 
 	setPosition (position) {
 		if (position < 0 || position > this.buffer.length)
-			throw new ValueError('position out of bounds');
+			throw new RangeError('position out of bounds');
 
 		this.currentPosition = position;
 	}
