@@ -132,6 +132,16 @@ module.exports = class BufferWalker {
 		return val;
 	}
 
+	readBytes(count) {
+		const val = new Buffer(count);
+
+		for (let i = 0; i < count; ++i)
+			val[i] = this.buffer[i];
+
+		this.advance(count);
+		return val;
+	}
+
 	/**
 	 * JS does not support 64 bit integers,
 	 * only 6 (last) bytes are read,
