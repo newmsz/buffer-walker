@@ -136,7 +136,7 @@ module.exports = class BufferWalker {
 		const val = new Buffer(count);
 
 		for (let i = 0; i < count; ++i)
-			val[i] = this.buffer[i];
+			val[i] = this.buffer[this.currentPosition+i];
 
 		this.advance(count);
 		return val;
