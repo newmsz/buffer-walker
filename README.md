@@ -8,6 +8,7 @@ const BufferWalker = require('buffer-walker');
 
 const buffer = Buffer.alloc(8);
 const walker = new BufferWalker(buffer);
+// or const walker = new BufferWalker(8);
 
 walker.writeInt32BE(1);
 walker.writeInt32BE(2);
