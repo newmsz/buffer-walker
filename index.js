@@ -10,11 +10,19 @@ module.exports = class BufferWalker {
 	 * @param {Buffer} buffer - instance of Buffer object
 	 */
 	constructor (buffer) {
-		if (buffer instanceof Buffer !== true)
-			throw new TypeError('buffer must be an instance of Buffer class');
+		if(buffer == undefined) {
+			this.buffer = Buffer.alloc(1024);
+		} else if(typeof buffer == 'number') {
+			this.buffer = Buffer.alloc(buffer);
+		} else {
+			if (buffer instanceof Buffer !== true)
+				throw new TypeError('buffer must be an instance of Buffer class');
 
-		this.buffer = buffer;
+			this.buffer = buffer;
+		}
+
 		this.currentPosition = 0;
+		this.dynamicWrite = false;
 
 		const self = this;
 
@@ -38,6 +46,29 @@ module.exports = class BufferWalker {
 		this.__readUInt64BE = function () { return self.readUInt64BE(); };
 		this.__readFloatBE = function () { return self.readFloatBE(); };
 		this.__readDoubleBE = function () { return self.readDoubleBE(); };
+	}
+
+	setDynamicWrite (dynamicWrite) {
+		this.dynamicWrite = dynamicWrite;
+	}
+
+	checkFreeBytes (byteCount) {
+		if(this.dynamicWrite && this.currentPosition + byteCount > this.buffer.length) {
+			var newbuf = Buffer.alloc(this.buffer.length * 2);
+			this.buffer.copy(newbuf);
+			this.buffer = newbuf;
+			this.checkFreeBytes(byteCount);
+		}
+	}
+
+	trim () {
+		var newbuf = Buffer.alloc(this.currentPosition);
+		this.buffer.copy(newbuf, 0, 0, this.currentPosition);
+		this.buffer = newbuf;
+	}
+
+	getBuffer () {
+		return this.buffer;
 	}
 
 	advance (byteCount) {
@@ -252,96 +283,114 @@ module.exports = class BufferWalker {
 
 
 	writeInt8 (val) {
+		this.checkFreeBytes(1);
 		this.buffer.writeInt8(val, this.currentPosition);
 		this.advance(1);
 	}
 
 	writeUInt8 (val) {
+		this.checkFreeBytes(1);
 		this.buffer.writeUInt8(val, this.currentPosition);
 		this.advance(1);
 	}
 
 	writeInt16BE (val) {
+		this.checkFreeBytes(2);
 		this.buffer.writeInt16BE(val, this.currentPosition);
 		this.advance(2);
 	}
 
 	writeUInt16BE (val) {
+		this.checkFreeBytes(2);
 		this.buffer.writeUInt16BE(val, this.currentPosition);
 		this.advance(2);
 	}
 
 	writeInt32BE (val) {
+		this.checkFreeBytes(4);
 		this.buffer.writeInt32BE(val, this.currentPosition);
 		this.advance(4);
 	}
 
 	writeUInt32BE (val) {
+		this.checkFreeBytes(4);
 		this.buffer.writeUInt32BE(val, this.currentPosition);
 		this.advance(4);
 	}
 
 	writeInt64BE (val) {
+		this.checkFreeBytes(8);
 		const buff = (new Int64BE(val)).toBuffer(true);
 		buff.copy(this.buffer, this.currentPosition);
 		this.advance(8);
 	}
 
 	writeUInt64BE (val) {
+		this.checkFreeBytes(8);
 		const buff = (new UInt64BE(val)).toBuffer(true);
 		buff.copy(this.buffer, this.currentPosition);
 		this.advance(8);
 	}
 
 	writeFloatBE (val) {
+		this.checkFreeBytes(4);
 		this.buffer.writeFloatBE(val, this.currentPosition);
 		this.advance(4);
 	}
 
 	writeDoubleBE (val) {
+		this.checkFreeBytes(8);
 		this.buffer.writeDoubleBE(val, this.currentPosition);
 		this.advance(8);
 	}
 
 
 	writeInt16LE (val) {
+		this.checkFreeBytes(2);
 		this.buffer.writeInt16LE(val, this.currentPosition);
 		this.advance(2);
 	}
 
 	writeUInt16LE (val) {
+		this.checkFreeBytes(2);
 		this.buffer.writeUInt16LE(val, this.currentPosition);
 		this.advance(2);
 	}
 
 	writeInt32LE (val) {
+		this.checkFreeBytes(4);
 		this.buffer.writeInt32LE(val, this.currentPosition);
 		this.advance(4);
 	}
 
 	writeUInt32LE (val) {
+		this.checkFreeBytes(4);
 		this.buffer.writeUInt32LE(val, this.currentPosition);
 		this.advance(4);
 	}
 
 	writeInt64LE (val) {
+		this.checkFreeBytes(8);
 		const buff = (new Int64LE(val)).toBuffer(true);
 		buff.copy(this.buffer, this.currentPosition);
 		this.advance(8);
 	}
 
 	writeUInt64LE (val) {
+		this.checkFreeBytes(8);
 		const buff = (new UInt64LE(val)).toBuffer(true);
 		buff.copy(this.buffer, this.currentPosition);
 		this.advance(8);
 	}
 
 	writeFloatLE (val) {
+		this.checkFreeBytes(4);
 		this.buffer.writeFloatLE(val, this.currentPosition);
 		this.advance(4);
 	}
 
 	writeDoubleLE (val) {
+		this.checkFreeBytes(8);
 		this.buffer.writeDoubleLE(val, this.currentPosition);
 		this.advance(8);
 	}
