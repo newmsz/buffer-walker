@@ -65,6 +65,7 @@ module.exports = class BufferWalker {
 		var newbuf = Buffer.alloc(this.currentPosition);
 		this.buffer.copy(newbuf, 0, 0, this.currentPosition);
 		this.buffer = newbuf;
+		return this;
 	}
 
 	getBuffer () {
@@ -72,7 +73,12 @@ module.exports = class BufferWalker {
 	}
 
 	advance (byteCount) {
-		this.setPosition(this.currentPosition + byteCount);
+		if(this.currentPosition + byteCount <= this.buffer.length) {
+			this.setPosition(this.currentPosition + byteCount);
+			return this.currentPosition;
+		} else {
+			return -1;
+		}
 	}
 
 	regress (byteCount) {
@@ -393,6 +399,12 @@ module.exports = class BufferWalker {
 		this.checkFreeBytes(8);
 		this.buffer.writeDoubleLE(val, this.currentPosition);
 		this.advance(8);
+	}
+
+	appendBuffer (buffer) {
+		this.checkFreeBytes(buffer.length);
+		buffer.copy(this.buffer, this.currentPosition);
+		this.advance(buffer.length);
 	}
 
 }
